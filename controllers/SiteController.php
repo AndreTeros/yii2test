@@ -2,21 +2,19 @@
 
 namespace app\controllers;
 
+use app\models\ContactForm;
+use app\models\LoginForm;
 use Yii;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\Response;
-use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
 
-class SiteController extends Controller
-{
+class SiteController extends Controller {
     /**
      * @inheritdoc
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -41,8 +39,7 @@ class SiteController extends Controller
     /**
      * @inheritdoc
      */
-    public function actions()
-    {
+    public function actions() {
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
@@ -59,8 +56,7 @@ class SiteController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
-    {
+    public function actionIndex() {
         return $this->render('index');
     }
 
@@ -69,14 +65,13 @@ class SiteController extends Controller
      *
      * @return Response|string
      */
-    public function actionLogin()
-    {
-        if (!Yii::$app->user->isGuest) {
+    public function actionLogin() {
+        if(!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
 
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        if($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
         }
         return $this->render('login', [
@@ -89,8 +84,7 @@ class SiteController extends Controller
      *
      * @return Response
      */
-    public function actionLogout()
-    {
+    public function actionLogout() {
         Yii::$app->user->logout();
 
         return $this->goHome();
@@ -101,10 +95,9 @@ class SiteController extends Controller
      *
      * @return Response|string
      */
-    public function actionContact()
-    {
+    public function actionContact() {
         $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
+        if($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
             Yii::$app->session->setFlash('contactFormSubmitted');
 
             return $this->refresh();
@@ -119,31 +112,28 @@ class SiteController extends Controller
      *
      * @return string
      */
-    public function actionAbout()
-    {
+    public function actionAbout() {
         return $this->render('about');
     }
 
-	public function actionSay($message = 'Привет')
-	{
-		return $this->render('say', ['message' => $message]);
-	}
+    public function actionSay($message = 'Привет') {
+        return $this->render('say', ['message' => $message]);
+    }
 
-	public function actionEntry()
-	{
-		$model = new \app\models\EntryForm();
+    public function actionEntry() {
+        $model = new \app\models\EntryForm();
 
-		if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-			// данные в $model удачно проверены
+        if($model->load(Yii::$app->request->post()) && $model->validate()) {
+            // данные в $model удачно проверены
 
-			// делаем что-то полезное с $model ...
+            // делаем что-то полезное с $model ...
 
-			return $this->render('entry-confirm', ['model' => $model]);
-		} else {
-			// либо страница отображается первый раз, либо есть ошибка в данных
-			return $this->render('entry', ['model' => $model]);
-//			return d($model);
-		}
-	}
+            return $this->render('entry-confirm', ['model' => $model]);
+        } else {
+            // либо страница отображается первый раз, либо есть ошибка в данных
+            return $this->render('entry', ['model' => $model,'foo' => 'someValue']);
+//            return d($model);
+        }
+    }
 
 }
